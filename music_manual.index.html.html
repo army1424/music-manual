@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>고요함을 위한 음악 처방전</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --teal-50: #E1F5EE;
+      --teal-100: #9FE1CB;
+      --teal-200: #5DCAA5;
+      --teal-400: #1D9E75;
+      --teal-600: #0F6E56;
+      --teal-800: #085041;
+      --amber-50: #FAEEDA;
+      --amber-400: #EF9F27;
+      --amber-600: #854F0B;
+      --amber-800: #633806;
+      --gray-50: #F8F7F4;
+      --gray-100: #F0EEE9;
+      --gray-200: #E2DED6;
+      --gray-400: #9E9A93;
+      --gray-600: #5F5E5A;
+      --gray-800: #2C2C2A;
+      --text-primary: #1a1916;
+      --text-secondary: #5a5854;
+      --text-tertiary: #9a9690;
+      --border: rgba(0,0,0,0.08);
+      --border-light: rgba(0,0,0,0.05);
+      --bg: #faf9f6;
+      --bg-card: #ffffff;
+      --bg-secondary: #f4f2ee;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.7;
+    }
+
+    /* Background ambient waves */
+    .ambient {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .ambient svg {
+      position: absolute;
+      width: 200%;
+      opacity: 0.03;
+      animation: drift 20s ease-in-out infinite alternate;
+    }
+
+    .ambient svg:nth-child(2) {
+      animation-delay: -7s;
+      animation-duration: 27s;
+      opacity: 0.02;
+      top: 30%;
+    }
+
+    @keyframes drift {
+      0% { transform: translateX(-5%) translateY(0); }
+      100% { transform: translateX(0%) translateY(-3%); }
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 0 0 5rem;
+    }
+
+    /* ── COVER ── */
+    .cover {
+      padding: 4rem 2rem 3rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .cover-badge {
+      display: inline-block;
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--teal-600);
+      background: var(--teal-50);
+      padding: 5px 16px;
+      border-radius: 20px;
+      margin-bottom: 1.75rem;
+      font-weight: 400;
+    }
+
+    .cover-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: clamp(28px, 7vw, 38px);
+      font-weight: 300;
+      line-height: 1.35;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+      letter-spacing: -0.01em;
+    }
+
+    .cover-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      font-weight: 300;
+      line-height: 1.9;
+      max-width: 300px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .wave-player {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 4px;
+      height: 32px;
+    }
+
+    .wave-bar {
+      width: 3px;
+      background: var(--teal-200);
+      border-radius: 3px;
+      animation: wavePulse 1.8s ease-in-out infinite;
+    }
+
+    @keyframes wavePulse {
+      0%, 100% { height: 4px; opacity: 0.4; }
+      50% { height: 24px; opacity: 1; }
+    }
+
+    .divider {
+      height: 0.5px;
+      background: var(--border);
+      margin: 0 2rem;
+    }
+
+    /* ── SECTIONS ── */
+    .section {
+      padding: 2.5rem 1.5rem 0;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 1.25rem;
+    }
+
+    .section-num {
+      font-size: 10px;
+      color: var(--teal-400);
+      font-weight: 500;
+      min-width: 20px;
+    }
+
+    .section-title {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      font-weight: 400;
+    }
+
+    .section-line {
+      flex: 1;
+      height: 0.5px;
+      background: var(--border);
+    }
+
+    /* ── EMOTION GRID ── */
+    .hint {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      margin-bottom: 1rem;
+      line-height: 1.7;
+      padding: 0 0.25rem;
+    }
+
+    .emotion-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .emotion-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.1rem 1rem;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+      background: var(--bg-card);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .emotion-card:hover {
+      border-color: var(--teal-100);
+      background: var(--teal-50);
+      transform: translateY(-1px);
+    }
+
+    .emotion-card.active {
+      border-color: var(--teal-200);
+      background: var(--teal-50);
+      box-shadow: 0 0 0 3px rgba(29,158,117,0.08);
+    }
+
+    .emotion-card.active .emotion-name { color: var(--teal-600); }
+    .emotion-card.active .emotion-desc { color: var(--teal-400); }
+
+    .emotion-icon {
+      font-size: 22px;
+      margin-bottom: 7px;
+      display: block;
+    }
+
+    .emotion-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+      transition: color 0.2s;
+    }
+
+    .emotion-desc {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      transition: color 0.2s;
+    }
+
+    .detail-panel {
+      margin-top: 10px;
+      padding: 1.25rem 1.5rem;
+      border-radius: var(--radius-lg);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-light);
+      font-size: 13px;
+      line-height: 1.85;
+      color: var(--text-secondary);
+      min-height: 70px;
+      transition: all 0.3s ease;
+    }
+
+    .detail-panel strong { color: var(--teal-600); font-weight: 500; }
+
+    .detail-empty {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      text-align: center;
+      padding: 0.5rem 0;
+    }
+
+    /* ── USAGE STEPS ── */
+    .usage-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .usage-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 1.1rem 1.25rem;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      transition: background 0.2s;
+    }
+
+    .usage-item:hover { background: var(--bg-secondary); }
+
+    .usage-num {
+      font-size: 11px;
+      color: var(--teal-200);
+      min-width: 20px;
+      padding-top: 1px;
+      font-weight: 500;
+    }
+
+    .usage-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .usage-body {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.75;
+    }
+
+    /* ── DOSAGE ── */
+    .dosage-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: var(--bg-card);
+      overflow: hidden;
+    }
+
+    .dosage-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0.9rem 1.25rem;
+      border-bottom: 0.5px solid var(--border-light);
+    }
+
+    .dosage-row:last-child { border-bottom: none; }
+
+    .dosage-label {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      min-width: 64px;
+    }
+
+    .dosage-value {
+      font-size: 13px;
+      color: var(--text-primary);
+      flex: 1;
+    }
+
+    .dosage-pill {
+      font-size: 10px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: var(--teal-50);
+      color: var(--teal-600);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .caution-box {
+      margin-top: 10px;
+      border-left: 2px solid var(--amber-400);
+      padding: 1rem 1.25rem;
+      background: var(--amber-50);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    }
+
+    .caution-title {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--amber-600);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .caution-box p {
+      font-size: 12px;
+      color: var(--amber-800);
+      line-height: 1.75;
+    }
+
+    /* ── PAIRING ── */
+    .pairing-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .pairing-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      background: var(--bg-card);
+      transition: all 0.2s;
+      cursor: default;
+    }
+
+    .pairing-chip:hover {
+      background: var(--teal-50);
+      border-color: var(--teal-100);
+      color: var(--teal-600);
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      padding: 3rem 2rem 0;
+      text-align: center;
+      border-top: 0.5px solid var(--border-light);
+      margin-top: 2.5rem;
+    }
+
+    .footer-quote {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--text-secondary);
+      line-height: 1.9;
+      font-style: italic;
+      margin-bottom: 0.75rem;
+    }
+
+    .footer-sub {
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 380px) {
+      .cover { padding: 3rem 1.5rem 2.5rem; }
+      .section { padding: 2rem 1.25rem 0; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="ambient">
+  <svg viewBox="0 0 1400 300" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 150 Q350 50 700 150 Q1050 250 1400 150" fill="none" stroke="#1D9E75" stroke-width="2"/>
+    <path d="M0 180 Q350 80 700 180 Q1050 280 1400 180" fill="none" stroke="#1D9E75" stroke-width="2"/>
+    <path d="M0 120 Q350 20 700 120 Q1050 220 1400 120" fill="none" stroke="#1D9E75" stroke-width="2"/>
+    <path d="M0 210 Q350 110 700 210 Q1050 310 1400 210" fill="none" stroke="#1D9E75" stroke-width="2"/>
+  </svg>
+  <svg viewBox="0 0 1400 300" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 100 Q400 200 800 100 Q1200 0 1400 100" fill="none" stroke="#1D9E75" stroke-width="1.5"/>
+    <path d="M0 200 Q400 100 800 200 Q1200 300 1400 200" fill="none" stroke="#1D9E75" stroke-width="1.5"/>
+  </svg>
+</div>
+
+<div class="page">
+
+  <!-- COVER -->
+  <div class="cover reveal">
+    <span class="cover-badge">New Age · 감정 사용설명서</span>
+    <h1 class="cover-title">고요함을 위한<br>음악 처방전</h1>
+    <p class="cover-desc">이 음악은 당신의 내면이 쉬어가고 싶을 때,<br>감정의 파도가 잠잠해지길 기다릴 때 설계되었습니다.</p>
+    <div class="wave-player" id="wavePlayer"></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- EMOTION GUIDE -->
+  <div class="section reveal">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <span class="section-title">감정 선택 가이드</span>
+      <div class="section-line"></div>
+    </div>
+    <p class="hint">지금 느끼는 감정을 선택하면, 이 음악이 어떻게 도움을 드릴 수 있는지 안내해 드립니다.</p>
+
+    <div class="emotion-grid">
+      <div class="emotion-card" data-id="anxiety" onclick="selectEmotion(this)">
+        <span class="emotion-icon">🌊</span>
+        <div class="emotion-name">불안 · 긴장</div>
+        <div class="emotion-desc">마음이 빨리 달릴 때</div>
+      </div>
+      <div class="emotion-card" data-id="tired" onclick="selectEmotion(this)">
+        <span class="emotion-icon">🍃</span>
+        <div class="emotion-name">피로 · 소진</div>
+        <div class="emotion-desc">에너지가 바닥났을 때</div>
+      </div>
+      <div class="emotion-card" data-id="sad" onclick="selectEmotion(this)">
+        <span class="emotion-icon">🌧</span>
+        <div class="emotion-name">슬픔 · 외로움</div>
+        <div class="emotion-desc">마음이 무거울 때</div>
+      </div>
+      <div class="emotion-card" data-id="scattered" onclick="selectEmotion(this)">
+        <span class="emotion-icon">🍂</span>
+        <div class="emotion-name">산만 · 혼란</div>
+        <div class="emotion-desc">생각이 흩어질 때</div>
+      </div>
+      <div class="emotion-card" data-id="angry" onclick="selectEmotion(this)">
+        <span class="emotion-icon">🌋</span>
+        <div class="emotion-name">분노 · 답답함</div>
+        <div class="emotion-desc">감정이 뜨거울 때</div>
+      </div>
+      <div class="emotion-card" data-id="peace" onclick="selectEmotion(this)">
+        <span class="emotion-icon">✨</span>
+        <div class="emotion-name">평온 · 충전</div>
+        <div class="emotion-desc">더 깊이 쉬고 싶을 때</div>
+      </div>
+    </div>
+
+    <div class="detail-panel" id="detailPanel">
+      <span class="detail-empty">위 감정 중 하나를 선택해보세요.</span>
+    </div>
+  </div>
+
+  <!-- HOW TO USE -->
+  <div class="section reveal">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <span class="section-title">복용 방법</span>
+      <div class="section-line"></div>
+    </div>
+    <ul class="usage-list">
+      <li class="usage-item">
+        <span class="usage-num">01</span>
+        <div>
+          <div class="usage-title">자세를 먼저 고르세요</div>
+          <div class="usage-body">눕거나, 창가에 기대거나, 눈을 감고 앉아보세요. 몸이 편안함을 느끼면 음악이 더 깊이 스며듭니다.</div>
+        </div>
+      </li>
+      <li class="usage-item">
+        <span class="usage-num">02</span>
+        <div>
+          <div class="usage-title">처음엔 음악에 저항하지 마세요</div>
+          <div class="usage-body">감정을 억누르지 않아도 됩니다. 떠오르는 생각은 구름처럼 흘려보내고, 음악의 흐름에 몸을 맡기세요.</div>
+        </div>
+      </li>
+      <li class="usage-item">
+        <span class="usage-num">03</span>
+        <div>
+          <div class="usage-title">숨결을 음악에 맞추세요</div>
+          <div class="usage-body">멜로디가 올라갈 때 들이쉬고, 내려올 때 내쉬어보세요. 호흡이 음악의 리듬과 만나면 마음이 자연스럽게 가라앉습니다.</div>
+        </div>
+      </li>
+      <li class="usage-item">
+        <span class="usage-num">04</span>
+        <div>
+          <div class="usage-title">반복 재생을 두려워 말 것</div>
+          <div class="usage-body">같은 음악이라도 들을 때마다 다르게 들립니다. 오늘의 감정이 음악을 새롭게 만들어줄 것입니다.</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- DOSAGE -->
+  <div class="section reveal">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <span class="section-title">권장 용량</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="dosage-card">
+      <div class="dosage-row">
+        <span class="dosage-label">일반 용량</span>
+        <span class="dosage-value">하루 1–2회, 각 10–20분</span>
+        <span class="dosage-pill">권장</span>
+      </div>
+      <div class="dosage-row">
+        <span class="dosage-label">급성 처방</span>
+        <span class="dosage-value">감정이 격할 때 즉시, 3–5분만도 효과 있음</span>
+        <span class="dosage-pill">속효</span>
+      </div>
+      <div class="dosage-row">
+        <span class="dosage-label">수면 보조</span>
+        <span class="dosage-value">취침 30분 전, 타이머 설정 권장</span>
+        <span class="dosage-pill">야간</span>
+      </div>
+      <div class="dosage-row">
+        <span class="dosage-label">집중 지원</span>
+        <span class="dosage-value">작업 시 배경음으로, 볼륨 낮게 유지</span>
+        <span class="dosage-pill">장기</span>
+      </div>
+    </div>
+    <div class="caution-box">
+      <div class="caution-title">주의사항</div>
+      <p>이 음악은 전문적인 심리 상담을 대체하지 않습니다. 감정적 고통이 지속된다면 가까운 사람에게 이야기하거나 전문가의 도움을 구하세요. 음악은 그 여정을 함께할 뿐입니다.</p>
+    </div>
+  </div>
+
+  <!-- PAIRING -->
+  <div class="section reveal">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <span class="section-title">함께하면 좋은 것들</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="pairing-wrap">
+      <span class="pairing-chip">☕ 따뜻한 음료</span>
+      <span class="pairing-chip">🕯 조명 낮추기</span>
+      <span class="pairing-chip">📓 저널 쓰기</span>
+      <span class="pairing-chip">🪴 창밖 바라보기</span>
+      <span class="pairing-chip">🛁 따뜻한 목욕</span>
+      <span class="pairing-chip">🌿 가벼운 스트레칭</span>
+      <span class="pairing-chip">🌙 낮잠</span>
+      <span class="pairing-chip">🎨 그림 그리기</span>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer reveal">
+    <p class="footer-quote">"음악은 감정의 언어다.<br>말이 끝나는 곳에서 음악이 시작된다."</p>
+    <p class="footer-sub">이 음악이 당신의 하루를 조금 더 부드럽게 만들어주길 바랍니다.</p>
+  </div>
+
+</div>
+
+<script>
+  // Wave animation
+  const wavePlayer = document.getElementById('wavePlayer');
+  const heights = [5, 9, 14, 20, 26, 20, 14, 9, 5, 9, 14, 20, 26, 20, 14, 9, 5];
+  heights.forEach((h, i) => {
+    const bar = document.createElement('div');
+    bar.className = 'wave-bar';
+    bar.style.animationDelay = (i * 0.11) + 's';
+    bar.style.height = h + 'px';
+    wavePlayer.appendChild(bar);
+  });
+
+  // Emotion details
+  const details = {
+    anxiety: `<strong>불안·긴장</strong>을 느끼는 지금, 이 음악은 빠르게 달리는 마음의 속도를 천천히 늦춰줍니다. 멜로디의 느린 파형이 신경계에 '지금은 안전하다'는 신호를 보냅니다. 귀에 집중하기보다 <strong>음악이 몸 안으로 스며드는 감각</strong>에 주의를 두세요.`,
+    tired: `<strong>피로와 소진</strong>의 상태에서 이 음악은 회복을 강요하지 않습니다. 그저 당신이 쉴 수 있는 공간을 만들어줄 뿐입니다. 아무것도 하지 않아도 됩니다. 이 음악과 함께 <strong>존재하는 것</strong>만으로 충분합니다.`,
+    sad: `<strong>슬픔과 외로움</strong>은 억누를수록 더 커집니다. 이 음악은 당신의 감정을 없애려 하지 않고, 함께 앉아있어 줍니다. 흘러내리는 음표들이 <strong>울어도 괜찮다</strong>고 말해줄 것입니다. 눈물이 나도 허락하세요.`,
+    scattered: `<strong>산만하고 혼란스러운</strong> 마음에 이 음악은 닻처럼 작용합니다. 흘러가는 멜로디의 한 선율을 붙잡고 따라가 보세요. 생각이 흩어질 때마다 <strong>음악으로 돌아오는 연습</strong>이 집중력을 다시 모아줍니다.`,
+    angry: `<strong>분노와 답답함</strong>은 에너지가 막힌 상태입니다. 이 음악의 고요함이 처음엔 낯설거나 거부감이 들 수 있습니다. 그 저항도 느껴보세요. 서서히 음악이 열을 식히듯 <strong>감정의 온도를 낮춰줄 것</strong>입니다.`,
+    peace: `이미 <strong>평온한 상태</strong>라면, 이 음악은 그 고요함을 더 깊게 데려가 줍니다. 단순한 휴식이 아니라 내면의 회복을 위한 시간으로 사용해보세요. <strong>아무 생각 없이 음악 안에 머무는 것</strong>이 가장 좋은 사용법입니다.`
+  };
+
+  function selectEmotion(el) {
+    document.querySelectorAll('.emotion-card').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    const panel = document.getElementById('detailPanel');
+    panel.style.opacity = '0';
+    panel.style.transform = 'translateY(6px)';
+    setTimeout(() => {
+      panel.innerHTML = details[el.dataset.id] || '';
+      panel.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+      panel.style.opacity = '1';
+      panel.style.transform = 'translateY(0)';
+    }, 150);
+  }
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
